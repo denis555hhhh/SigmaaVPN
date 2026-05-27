@@ -1,0 +1,117 @@
+🤖 TELEGRAM BOT SETUP - SigmaVPN
+
+=== БЫСТРЫЙ СТАРТ ===
+
+1. УСТАНОВКА ЗАВИСИМОСТЕЙ
+   pip install python-telegram-bot==20.3 requests
+
+2. ЗАПУСК БОТА ЛОКАЛЬНО
+   python telegram_bot.py
+
+3. ТЕСТИРОВАНИЕ В TELEGRAM
+   - Откройте Telegram
+   - Найдите вашего бота (по username)
+   - Нажмите /start
+   - Выберите подписку
+
+=== ДОБАВЛЕНИЕ YANDEX.KASSA ===
+
+1. СОЗДАЙТЕ АККАУНТ
+   https://kassa.yandex.ru/
+
+2. ПОЛУЧИТЕ КЛЮЧИ
+   - Перейдите в "Настройки" → "API ключи"
+   - Скопируйте:
+     * Shop ID (ID магазина)
+     * Secret Key (Секретный ключ)
+
+3. ДОБАВЬТЕ КЛЮЧИ В ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ
+   
+   Способ 1: Создайте файл .env
+   ================================
+   YANDEX_SHOP_ID=123456
+   YANDEX_SECRET_KEY=test_secret_key_here
+   ================================
+   
+   Способ 2: Отредактируйте telegram_bot.py
+   ================================
+   Найдите строки:
+   YANDEX_SHOP_ID = os.getenv('YANDEX_SHOP_ID', '123456')
+   YANDEX_SECRET_KEY = os.getenv('YANDEX_SECRET_KEY', 'test_secret_key')
+   
+   Замените на:
+   YANDEX_SHOP_ID = '123456'  # Ваш Shop ID
+   YANDEX_SECRET_KEY = 'test_secret_key'  # Ваш Secret Key
+   ================================
+
+4. ПЕРЕЗАПУСТИТЕ БОТ
+   python telegram_bot.py
+
+=== ФУНКЦИИ БОТА ===
+
+✅ Главное меню с кнопками
+✅ Выбор подписок (Базовая, Стандарт, Премиум)
+✅ Интеграция Yandex.Kassa
+✅ Автоматическая активация подписки после оплаты
+✅ Просмотр активных подписок
+✅ Отслеживание срока подписки
+✅ Помощь и контакты
+
+=== РАЗВЁРТЫВАНИЕ НА RAILWAY ===
+
+1. ДОБАВЬТЕ ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ В RAILWAY
+   - TELEGRAM_TOKEN=8934651350:AAG4pGwPnY_5nSwV-L141mdhxC-BnEqEJK8
+   - YANDEX_SHOP_ID=123456
+   - YANDEX_SECRET_KEY=test_secret_key
+
+2. СОЗДАЙТЕ НОВЫЙ СЕРВИС НА RAILWAY
+   - Выберите "Deploy from GitHub"
+   - Выберите ваш репозиторий
+   - Добавьте команду запуска: python telegram_bot.py
+
+3. БОТА БУДЕТ РАБОТАТЬ 24/7
+
+=== СТРУКТУРА БД ===
+
+telegram_users
+- telegram_id (уникальный ID пользователя)
+- username
+- first_name
+- created_at
+
+telegram_payments
+- telegram_id
+- plan (basic, standard, premium)
+- amount (цена в рублях)
+- status (pending, completed)
+- payment_id (уникальный ID платежа)
+- yandex_payment_id (ID платежа в Yandex.Kassa)
+- created_at
+
+telegram_subscriptions
+- telegram_id
+- plan (basic, standard, premium)
+- status (active, expired)
+- start_date
+- end_date
+- devices (количество устройств)
+
+=== ЦЕНЫ И ПЛАНЫ ===
+
+🟢 Базовая: 99 ₽ за 7 дней (1 устройство)
+🔵 Стандарт: 299 ₽ за 30 дней (3 устройства)
+🟣 Премиум: 799 ₽ за 365 дней (5 устройств)
+
+=== ПОДДЕРЖКА ===
+
+Если есть вопросы:
+- Telegram: @sigmavpn_admin
+- Email: support@sigmavpn.com
+- GitHub: https://github.com/denis555hhhh/sigmaVPNN
+
+=== СЛЕДУЮЩИЕ ШАГИ ===
+
+1. Добавить автоматическую выдачу VPN конфигов
+2. Добавить вебхук для получения уведомлений об оплате
+3. Добавить админ-панель для управления подписками
+4. Добавить поддержку других платёжных систем
