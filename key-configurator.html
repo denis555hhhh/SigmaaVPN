@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Конфигуратор ключей HAPP — SigmaVPN</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">🔒</span>
+        <span class="logo__text">SigmaVPN</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#features">Возможности</a>
+        <a href="pricing.html">Тарифы</a>
+        <a href="index.html#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="key-configurator-section">
+    <div class="container">
+      <div class="section-header">
+        <h1>🔑 Конфигуратор ключей HAPP</h1>
+        <p>Создавайте и управляйте ключами доступа для вашей подписки</p>
+      </div>
+
+      <div class="key-configurator-grid">
+        <!-- ЛЕВАЯ КОЛОНКА: СОЗДАНИЕ КЛЮЧЕЙ -->
+        <div class="key-params">
+          <div class="key-section">
+            <h2>Создать новый ключ</h2>
+            
+            <div class="param-group">
+              <label class="param-label">
+                <span>📝 Название ключа</span>
+              </label>
+              <input type="text" id="keyName" placeholder="Например: Мой ноутбук" class="key-input">
+              <div class="param-info">Максимум 50 символов</div>
+            </div>
+
+            <div class="param-group">
+              <label class="param-label">
+                <span>🖥️ Тип устройства</span>
+              </label>
+              <div class="device-options">
+                <button class="device-btn active" data-device="windows">
+                  <span class="device-icon">🪟</span>
+                  <span>Windows</span>
+                </button>
+                <button class="device-btn" data-device="mac">
+                  <span class="device-icon">🍎</span>
+                  <span>macOS</span>
+                </button>
+                <button class="device-btn" data-device="linux">
+                  <span class="device-icon">🐧</span>
+                  <span>Linux</span>
+                </button>
+                <button class="device-btn" data-device="ios">
+                  <span class="device-icon">📱</span>
+                  <span>iOS</span>
+                </button>
+                <button class="device-btn" data-device="android">
+                  <span class="device-icon">🤖</span>
+                  <span>Android</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="param-group">
+              <label class="param-label">
+                <span>⏰ Срок действия</span>
+              </label>
+              <div class="expiry-options">
+                <button class="expiry-btn active" data-expiry="30">30 дней</button>
+                <button class="expiry-btn" data-expiry="90">90 дней</button>
+                <button class="expiry-btn" data-expiry="180">180 дней</button>
+                <button class="expiry-btn" data-expiry="365">1 год</button>
+                <button class="expiry-btn" data-expiry="0">Без ограничений</button>
+              </div>
+            </div>
+
+            <div class="param-group">
+              <label class="param-label">
+                <span>🔐 Уровень доступа</span>
+              </label>
+              <div class="access-options">
+                <label class="access-radio">
+                  <input type="radio" name="access" value="basic" checked>
+                  <span>Базовый</span>
+                  <span class="access-desc">Стандартный доступ</span>
+                </label>
+                <label class="access-radio">
+                  <input type="radio" name="access" value="premium">
+                  <span>Премиум</span>
+                  <span class="access-desc">Все функции + приоритет</span>
+                </label>
+                <label class="access-radio">
+                  <input type="radio" name="access" value="admin">
+                  <span>Администратор</span>
+                  <span class="access-desc">Полный контроль</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="param-group">
+              <label class="param-label">
+                <span>🌍 Регионы доступа</span>
+              </label>
+              <div class="regions-list">
+                <label class="region-checkbox">
+                  <input type="checkbox" value="all" id="selectAll">
+                  <span>Все регионы</span>
+                </label>
+                <label class="region-checkbox">
+                  <input type="checkbox" value="eu" checked>
+                  <span>🇪🇺 Европа</span>
+                </label>
+                <label class="region-checkbox">
+                  <input type="checkbox" value="us" checked>
+                  <span>🇺🇸 США</span>
+                </label>
+                <label class="region-checkbox">
+                  <input type="checkbox" value="asia" checked>
+                  <span>🌏 Азия</span>
+                </label>
+                <label class="region-checkbox">
+                  <input type="checkbox" value="ru">
+                  <span>🇷🇺 Россия</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn btn--primary btn--full btn--lg" id="generateKeyBtn">Создать ключ</button>
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: СПИСОК И УПРАВЛЕНИЕ КЛЮЧАМИ -->
+        <div class="key-list-container">
+          <div class="key-section">
+            <h2>Мои ключи</h2>
+            
+            <div class="key-filters">
+              <input type="text" id="searchKeys" placeholder="🔍 Поиск ключей..." class="key-search">
+              <select id="filterDevice" class="key-filter">
+                <option value="">Все устройства</option>
+                <option value="windows">Windows</option>
+                <option value="mac">macOS</option>
+                <option value="linux">Linux</option>
+                <option value="ios">iOS</option>
+                <option value="android">Android</option>
+              </select>
+            </div>
+
+            <div id="keysList" class="keys-list">
+              <!-- Ключи будут добавлены здесь -->
+            </div>
+
+            <div id="emptyState" class="empty-state">
+              <div class="empty-icon">🔑</div>
+              <p>У вас еще нет ключей</p>
+              <p class="empty-desc">Создайте первый ключ, чтобы начать</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL: Показ ключа -->
+  <div id="keyModal" class="modal-overlay">
+    <div class="modal modal--key">
+      <button class="modal-close" id="closeKeyModal">&times;</button>
+      <div class="modal-content">
+        <h2>🔑 Ваш ключ создан</h2>
+        <p class="modal-subtitle">Сохраните этот ключ в безопасном месте. Вы больше не сможете его увидеть!</p>
+        
+        <div class="key-display">
+          <div class="key-value" id="keyValue">
+            <!-- Ключ будет вставлен здесь -->
+          </div>
+          <button class="btn btn--outline btn--sm" id="copyKeyBtn">📋 Копировать</button>
+        </div>
+
+        <div class="key-info">
+          <div class="info-row">
+            <span>Название:</span>
+            <span id="modalKeyName"></span>
+          </div>
+          <div class="info-row">
+            <span>Устройство:</span>
+            <span id="modalKeyDevice"></span>
+          </div>
+          <div class="info-row">
+            <span>Срок действия:</span>
+            <span id="modalKeyExpiry"></span>
+          </div>
+          <div class="info-row">
+            <span>Уровень доступа:</span>
+            <span id="modalKeyAccess"></span>
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--full" id="closeModalBtn">Понял, сохранил</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Детали ключа -->
+  <div id="keyDetailsModal" class="modal-overlay">
+    <div class="modal modal--details">
+      <button class="modal-close" id="closeDetailsModal">&times;</button>
+      <div class="modal-content">
+        <h2>📋 Детали ключа</h2>
+        
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Название</span>
+            <span class="detail-value" id="detailName"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">ID ключа</span>
+            <span class="detail-value detail-mono" id="detailId"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Устройство</span>
+            <span class="detail-value" id="detailDevice"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Уровень доступа</span>
+            <span class="detail-value" id="detailAccess"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Создан</span>
+            <span class="detail-value" id="detailCreated"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Истекает</span>
+            <span class="detail-value" id="detailExpires"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Статус</span>
+            <span class="detail-value" id="detailStatus"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Регионы</span>
+            <span class="detail-value" id="detailRegions"></span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn--outline btn--full" id="revokeKeyBtn">🗑️ Отозвать ключ</button>
+          <button class="btn btn--primary btn--full" id="closeDetailsBtn">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script src="key-configurator.js"></script>
+  <!-- TELEGRAM SUPPORT BUTTON -->
+  <a href="https://t.me/slogg12" target="_blank" rel="noopener" class="tg-support" aria-label="Техподдержка в Telegram">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.667l-2.95-.924c-.64-.203-.658-.64.136-.954l11.57-4.461c.537-.194 1.006.131.968.893z" fill="white"/></svg>
+    <span>Поддержка</span>
+  </a>
+
+</body>
+</html>

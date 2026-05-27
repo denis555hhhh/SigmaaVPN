@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Конфигуратор подписок — SigmaVPN</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">🔒</span>
+        <span class="logo__text">SigmaVPN</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#features">Возможности</a>
+        <a href="pricing.html">Тарифы</a>
+        <a href="index.html#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="configurator-section">
+    <div class="container">
+      <div class="section-header">
+        <h1>Конфигуратор подписок</h1>
+        <p>Создайте идеальный тариф под ваши нужды</p>
+      </div>
+
+      <div class="configurator-grid">
+        <!-- ЛЕВАЯ КОЛОНКА: ПАРАМЕТРЫ -->
+        <div class="configurator-params">
+          <div class="param-group">
+            <label class="param-label">
+              <span>📱 Количество устройств</span>
+              <span class="param-value" id="devicesValue">3</span>
+            </label>
+            <input type="range" id="devicesSlider" min="1" max="10" value="3" class="param-slider">
+            <div class="param-info">1 - 10 устройств</div>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label">
+              <span>🌍 Количество стран</span>
+              <span class="param-value" id="countriesValue">16</span>
+            </label>
+            <input type="range" id="countriesSlider" min="1" max="100" value="16" class="param-slider">
+            <div class="param-info">1 - 100 стран</div>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label">
+              <span>⚡ Скорость</span>
+              <span class="param-value" id="speedValue">1 Гбит/с</span>
+            </label>
+            <div class="speed-options">
+              <button class="speed-btn" data-speed="100">100 Мбит/с</button>
+              <button class="speed-btn active" data-speed="1000">1 Гбит/с</button>
+              <button class="speed-btn" data-speed="10000">10 Гбит/с</button>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label">
+              <span>🔒 Функции</span>
+            </label>
+            <div class="features-list">
+              <label class="feature-checkbox">
+                <input type="checkbox" id="killSwitch" checked>
+                <span>Kill Switch</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" id="dedicatedIP">
+                <span>Выделенный IP</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" id="obfuscation">
+                <span>Обфускация трафика</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" id="adBlock">
+                <span>Блокировка рекламы</span>
+              </label>
+              <label class="feature-checkbox">
+                <input type="checkbox" id="support24">
+                <span>Поддержка 24/7</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label">
+              <span>📅 Период подписки</span>
+            </label>
+            <div class="period-options">
+              <button class="period-btn active" data-period="1">1 месяц</button>
+              <button class="period-btn" data-period="3">3 месяца</button>
+              <button class="period-btn" data-period="12">12 месяцев</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: ПРЕВЬЮ И ЦЕНА -->
+        <div class="configurator-preview">
+          <div class="preview-card">
+            <h2>Ваш тариф</h2>
+            
+            <div class="preview-specs">
+              <div class="spec-item">
+                <span class="spec-icon">📱</span>
+                <div>
+                  <div class="spec-label">Устройства</div>
+                  <div class="spec-value" id="previewDevices">3</div>
+                </div>
+              </div>
+
+              <div class="spec-item">
+                <span class="spec-icon">🌍</span>
+                <div>
+                  <div class="spec-label">Страны</div>
+                  <div class="spec-value" id="previewCountries">16</div>
+                </div>
+              </div>
+
+              <div class="spec-item">
+                <span class="spec-icon">⚡</span>
+                <div>
+                  <div class="spec-label">Скорость</div>
+                  <div class="spec-value" id="previewSpeed">1 Гбит/с</div>
+                </div>
+              </div>
+
+              <div class="spec-item">
+                <span class="spec-icon">📅</span>
+                <div>
+                  <div class="spec-label">Период</div>
+                  <div class="spec-value" id="previewPeriod">1 месяц</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-features">
+              <h3>Включено:</h3>
+              <ul id="previewFeatures">
+                <li>✓ Kill Switch</li>
+              </ul>
+            </div>
+
+            <div class="preview-pricing">
+              <div class="price-row">
+                <span>Базовая цена</span>
+                <span id="basePrice">199 ₽</span>
+              </div>
+              <div class="price-row">
+                <span>Доп. функции</span>
+                <span id="featuresPrice">0 ₽</span>
+              </div>
+              <div class="price-row price-row--total">
+                <span>Итого в месяц</span>
+                <span id="monthlyPrice">199 ₽</span>
+              </div>
+              <div class="price-row price-row--total">
+                <span>Итого за период</span>
+                <span id="totalPrice">199 ₽</span>
+              </div>
+            </div>
+
+            <button class="btn btn--primary btn--full btn--lg" id="buyBtn">Купить подписку</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+  <script src="configurator.js"></script>
+  <!-- TELEGRAM SUPPORT BUTTON -->
+  <a href="https://t.me/slogg12" target="_blank" rel="noopener" class="tg-support" aria-label="Техподдержка в Telegram">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.667l-2.95-.924c-.64-.203-.658-.64.136-.954l11.57-4.461c.537-.194 1.006.131.968.893z" fill="white"/></svg>
+    <span>Поддержка</span>
+  </a>
+
+</body>
+</html>

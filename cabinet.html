@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Личный кабинет — SigmaVPN</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">🔒</span>
+        <span class="logo__text">SigmaVPN</span>
+      </a>
+      <button class="btn btn--outline btn--sm" id="logoutBtn">Выход</button>
+    </div>
+  </header>
+
+  <section class="cabinet-section">
+    <div class="container">
+      <div class="cabinet-grid">
+        <!-- ЛЕВАЯ КОЛОНКА: ПРОФИЛЬ -->
+        <div class="cabinet-sidebar">
+          <div class="cabinet-card">
+            <div class="cabinet-avatar">👤</div>
+            <h3 id="cabUsername">Загрузка...</h3>
+            <p id="cabEmail">email@example.com</p>
+            <button class="btn btn--primary btn--full" id="editProfileBtn">Редактировать профиль</button>
+          </div>
+
+          <div class="cabinet-card">
+            <h4>Меню</h4>
+            <nav class="cabinet-nav">
+              <a href="#" class="cabinet-nav__item active" data-tab="subscription">
+                <span>📋</span> Подписка
+              </a>
+              <a href="#" class="cabinet-nav__item" data-tab="settings">
+                <span>⚙️</span> Настройки
+              </a>
+              <a href="#" class="cabinet-nav__item" data-tab="devices">
+                <span>📱</span> Устройства
+              </a>
+              <a href="#" class="cabinet-nav__item" data-tab="support">
+                <span>💬</span> Поддержка
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: КОНТЕНТ -->
+        <div class="cabinet-content">
+          <!-- TAB: ПОДПИСКА -->
+          <div class="cabinet-tab active" id="tab-subscription">
+            <div class="cabinet-card">
+              <h2>Ваша подписка</h2>
+              <div class="subscription-info">
+                <div class="subscription-item">
+                  <span class="label">Тариф:</span>
+                  <span class="value" id="subPlan">Загрузка...</span>
+                </div>
+                <div class="subscription-item">
+                  <span class="label">Статус:</span>
+                  <span class="value status-active" id="subStatus">Активна</span>
+                </div>
+                <div class="subscription-item">
+                  <span class="label">Начало:</span>
+                  <span class="value" id="subStart">-</span>
+                </div>
+                <div class="subscription-item">
+                  <span class="label">Конец:</span>
+                  <span class="value" id="subEnd">-</span>
+                </div>
+              </div>
+              <button class="btn btn--primary btn--full" style="margin-top: 20px;">Изменить тариф</button>
+            </div>
+
+            <div class="cabinet-card">
+              <h3>Преимущества вашего тарифа</h3>
+              <ul class="benefits-list">
+                <li id="benefit1">✓ Загрузка...</li>
+                <li id="benefit2">✓ Загрузка...</li>
+                <li id="benefit3">✓ Загрузка...</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- TAB: НАСТРОЙКИ -->
+          <div class="cabinet-tab" id="tab-settings">
+            <div class="cabinet-card">
+              <h2>Настройки аккаунта</h2>
+              <form id="settingsForm">
+                <div class="form-group">
+                  <label for="settingsPassword">Новый пароль</label>
+                  <input type="password" id="settingsPassword" placeholder="Оставьте пустым, чтобы не менять" />
+                </div>
+                <div class="form-group">
+                  <label for="settingsPasswordConfirm">Повторите пароль</label>
+                  <input type="password" id="settingsPasswordConfirm" placeholder="Повторите пароль" />
+                </div>
+                <button type="submit" class="btn btn--primary">Сохранить</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB: УСТРОЙСТВА -->
+          <div class="cabinet-tab" id="tab-devices">
+            <div class="cabinet-card">
+              <h2>Подключённые устройства</h2>
+              <div class="devices-list" id="devicesList">
+                <p style="text-align: center; color: #999;">Нет подключённых устройств</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: ПОДДЕРЖКА -->
+          <div class="cabinet-tab" id="tab-support">
+            <div class="cabinet-card">
+              <h2>Техническая поддержка</h2>
+              <p>Если у вас есть вопросы или проблемы, свяжитесь с нами:</p>
+              <div class="support-contacts">
+                <a href="https://t.me/slogg12" target="_blank" class="btn btn--primary btn--full">
+                  💬 Telegram поддержка
+                </a>
+              </div>
+            </div>
+
+            <div class="cabinet-card">
+              <h3>Часто задаваемые вопросы</h3>
+              <div class="faq-item">
+                <h4>Как подключить VPN?</h4>
+                <p>Скачайте приложение SigmaVPN и следуйте инструкциям установки.</p>
+              </div>
+              <div class="faq-item">
+                <h4>Как изменить тариф?</h4>
+                <p>Перейдите в раздел "Подписка" и нажмите "Изменить тариф".</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+  <script src="cabinet.js"></script>
+  <!-- TELEGRAM SUPPORT BUTTON -->
+  <a href="https://t.me/slogg12" target="_blank" rel="noopener" class="tg-support" aria-label="Техподдержка в Telegram">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.667l-2.95-.924c-.64-.203-.658-.64.136-.954l11.57-4.461c.537-.194 1.006.131.968.893z" fill="white"/></svg>
+    <span>Поддержка</span>
+  </a>
+
+</body>
+</html>

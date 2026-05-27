@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SigmaVPN — Защита и свобода в интернете</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-container">
+      <div class="loading-logo">🔒</div>
+      <h1 class="loading-title">SigmaVPN</h1>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+      <p class="loading-text">Загрузка...</p>
+    </div>
+  </div>
+
+  <!-- ANIMATED SHIELD BACKGROUND -->
+  <div class="shields-container">
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+    <div class="shield">🛡️</div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">🔒</span>
+        <span class="logo__text">SigmaVPN</span>
+      </a>
+      <nav class="nav">
+        <a href="#features">Возможности</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header__actions">
+      </div>
+      <button class="burger" id="burger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#features">Возможности</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <div class="hero__badge">⚡ Скорость до 10 Гбит/с</div>
+        <h1 class="hero__title">Полная свобода<br/>и <span class="gradient-text">анонимность</span><br/>в интернете<br/>и обход белых списков</h1>
+        <p class="hero__desc">Защитите своё соединение, обходите блокировки и сохраняйте конфиденциальность с SigmaVPN. Без логов. Без ограничений.</p>
+        <div class="hero__actions">
+          <a href="pricing.html" class="btn btn--primary btn--lg">Начать за 99 ₽/мес</a>
+          <a href="#features" class="btn btn--outline btn--lg">Узнать больше</a>
+        </div>
+        <div class="hero__trust">
+          <div class="trust-item"><span class="trust-num">1000+</span><span class="trust-label">Пользователей</span></div>
+          <div class="trust-divider"></div>
+          <div class="trust-item"><span class="trust-num">10+</span><span class="trust-label">Стран</span></div>
+          <div class="trust-divider"></div>
+          <div class="trust-item"><span class="trust-num">99.9%</span><span class="trust-label">Uptime</span></div>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <div class="globe-wrap">
+          <div class="globe">
+            <div class="globe__ring globe__ring--1"></div>
+            <div class="globe__ring globe__ring--2"></div>
+            <div class="globe__ring globe__ring--3"></div>
+            <div class="globe__core">
+              <span>🌍</span>
+            </div>
+            <div class="globe__dot" style="--a:20deg;--r:120px">🇩🇪</div>
+            <div class="globe__dot" style="--a:80deg;--r:130px">🇺🇸</div>
+            <div class="globe__dot" style="--a:150deg;--r:115px">🇯🇵</div>
+            <div class="globe__dot" style="--a:230deg;--r:125px">🇬🇧</div>
+            <div class="globe__dot" style="--a:300deg;--r:118px">🇳🇱</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Возможности</p>
+        <h2 class="section-title">Всё что нужно для<br/>безопасного интернета</h2>
+      </div>
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">🛡️</div>
+          <h3>Военное шифрование</h3>
+          <p>AES-256 шифрование защищает все ваши данные от перехвата и слежки.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🚫</div>
+          <h3>Политика No-Log</h3>
+          <p>Мы не храним никаких данных о вашей активности. Ваша приватность — наш приоритет.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">⚡</div>
+          <h3>Высокая скорость</h3>
+          <p>Серверы с пропускной способностью 10 Гбит/с обеспечивают молниеносное соединение.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🌍</div>
+          <h3>10+ стран</h3>
+          <p>Более 100 серверов в 10 странах мира. Подключайтесь откуда угодно.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🔄</div>
+          <h3>Kill Switch</h3>
+          <p>Автоматически блокирует интернет при разрыве VPN, чтобы ваш IP не раскрылся.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Как это работает</p>
+        <h2 class="section-title">Начните за 3 простых шага</h2>
+      </div>
+      <div class="how__steps">
+        <div class="how__step">
+          <div class="how__step-num">01</div>
+          <h3>Выберите тариф</h3>
+          <p>Подберите подходящий план — от базового до премиум с максимальными возможностями.</p>
+        </div>
+        <div class="how__arrow">→</div>
+        <div class="how__step">
+          <div class="how__step-num">02</div>
+          <h3>FunPay</h3>
+          <p>При покупке вы будете перенаправлены на сайт FunPay</p>
+        </div>
+        <div class="how__arrow">→</div>
+        <div class="how__step">
+          <div class="how__step-num">03</div>
+          <h3>Подключитесь</h3>
+          <p>Нажмите одну кнопку и наслаждайтесь безопасным и свободным интернетом.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PREVIEW -->
+  <section class="pricing-preview" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Тарифы</p>
+        <h2 class="section-title">Простые и честные цены</h2>
+        <p class="section-desc">30-дневная гарантия возврата денег на все тарифы</p>
+      </div>
+      <div class="plans">
+        <div class="plan-card">
+          <div class="plan-card__name">Базовый</div>
+          <div class="plan-card__price"><span class="price-num">99</span><span class="price-cur">₽/мес</span></div>
+          <ul class="plan-card__features">
+            <li>✓ 1 устройство</li>
+            <li>✓ 16 стран</li>
+            <li>✓ 100 Мбит/с</li>
+            <li>✓ AES-256</li>
+            <li class="disabled">✗ Kill Switch</li>
+            <li class="disabled">✗ Выделенный IP</li>
+          </ul>
+          <a href="pricing.html" class="btn btn--outline btn--full">Выбрать</a>
+        </div>
+        <div class="plan-card plan-card--popular">
+          <div class="plan-card__badge">Популярный</div>
+          <div class="plan-card__name">Стандарт</div>
+          <div class="plan-card__price"><span class="price-num">199</span><span class="price-cur">₽/мес</span></div>
+          <ul class="plan-card__features">
+            <li>✓ 3 устройства</li>
+            <li>✓ 16 стран</li>
+            <li>✓ 1 Гбит/с</li>
+            <li>✓ AES-256</li>
+            <li>✓ Kill Switch</li>
+            <li class="disabled">✗ Выделенный IP</li>
+          </ul>
+          <a href="pricing.html" class="btn btn--primary btn--full">Выбрать</a>
+        </div>
+        <div class="plan-card">
+          <div class="plan-card__name">Премиум</div>
+          <div class="plan-card__price"><span class="price-num">349</span><span class="price-cur">₽/мес</span></div>
+          <ul class="plan-card__features">
+            <li>✓ 6 устройств</li>
+            <li>✓ 16 стран</li>
+            <li>✓ 10 Гбит/с</li>
+            <li>✓ AES-256</li>
+            <li>✓ Kill Switch</li>
+            <li>✓ Выделенный IP</li>
+          </ul>
+          <a href="pricing.html" class="btn btn--outline btn--full">Выбрать</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">FAQ</p>
+        <h2 class="section-title">Частые вопросы</h2>
+      </div>
+      <div class="faq__list">
+        <div class="faq__item">
+          <button class="faq__q">Что такое VPN и зачем он нужен? <span>+</span></button>
+          <div class="faq__a">VPN (Virtual Private Network) шифрует ваш интернет-трафик и скрывает реальный IP-адрес, обеспечивая анонимность и защиту от слежки, а также позволяет обходить географические блокировки.</div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q">Замедлит ли VPN мой интернет? <span>+</span></button>
+          <div class="faq__a">Незначительно. Наши серверы оптимизированы для минимальной задержки. В большинстве случаев вы не заметите разницы, а в некоторых случаях скорость даже увеличивается.</div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q">Как отменить подписку? <span>+</span></button>
+          <div class="faq__a">Вы можете отменить подписку в любой момент в личном кабинете. Если вы не довольны сервисом в первые 30 дней — вернём деньги без вопросов.</div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q">Работает ли SigmaVPN в России? <span>+</span></button>
+          <div class="faq__a">Да, SigmaVPN использует технологию обфускации трафика, которая позволяет работать даже в странах с жёсткой интернет-цензурой.</div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q">Сколько устройств можно подключить? <span>+</span></button>
+          <div class="faq__a">В зависимости от тарифа: Базовый — 1 устройство, Стандарт — 3 устройства, Премиум — 6 устройств одновременно.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container cta__inner">
+      <h2>Начните прямо сейчас</h2>
+      <div class="cta__btns">
+        <a href="pricing.html" class="btn btn--outline btn--lg">Посмотреть тарифы</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="index.html" class="logo">
+          <span class="logo__icon">🔒</span>
+          <span class="logo__text">SigmaVPN</span>
+        </a>
+        <p>Защита и свобода в интернете для каждого.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>Продукт</h4>
+          <a href="#features">Возможности</a>
+          <a href="pricing.html">Тарифы</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer__col">
+          <h4>Компания</h4>
+          <a href="#">О нас</a>
+          <a href="#">Блог</a>
+          <a href="https://t.me/slogg12" target="_blank">Контакты</a>
+        </div>
+        <div class="footer__col">
+          <h4>Правовое</h4>
+          <a href="privacy-policy.html">Политика конфиденциальности</a>
+          <a href="terms-of-service.html">Условия использования</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 SigmaVPN. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CREATOR SECTION -->
+  <section class="creator-section">
+    <div class="container">
+      <div class="creator-content">
+        <div class="creator-text">
+          <strong>✨ Создатель сайта:</strong> Golub
+        </div>
+        <div class="creator-links">
+          <button id="discordProfileBtn" class="creator-link discord" title="Профиль Discord">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.444.864-.607 1.25a18.27 18.27 0 0 0-5.487 0c-.163-.386-.395-.875-.607-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.042-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.294.075.075 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.075.075 0 0 1 .079.009c.12.098.246.198.373.295a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.076.076 0 0 0-.041.107c.359.698.77 1.364 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-4.718-.838-8.812-3.549-12.54a.06.06 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-.965-2.157-2.156 0-1.193.964-2.157 2.157-2.157 1.193 0 2.156.964 2.156 2.157 0 1.19-.963 2.156-2.156 2.156zm7.975 0c-1.183 0-2.157-.965-2.157-2.156 0-1.193.964-2.157 2.157-2.157 1.193 0 2.156.964 2.156 2.157 0 1.19-.963 2.156-2.156 2.156z"/>
+            </svg>
+          </button>
+          
+          <!-- Discord Profile Modal -->
+          <div id="discordProfileModal" class="discord-modal" style="display: none;">
+            <div class="discord-modal__content">
+              <div class="discord-profile">
+                <div class="discord-profile__avatar">
+                <img src="https://cdn.discordapp.com/avatars/854478280210776064/a_1234567890abcdef1234567890abcdef.gif" alt="Профиль Golub" class="discord-profile__avatar-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Ccircle cx=%22100%22 cy=%22100%22 r=%22100%22 fill=%22%23333%22/%3E%3Ccircle cx=%22100%22 cy=%2270%22 r=%2235%22 fill=%22%23666%22/%3E%3Cellipse cx=%22100%22 cy=%22140%22 rx=%2250%22 ry=%2245%22 fill=%22%23666%22/%3E%3C/svg%3E'">
+              </div>
+                <div class="discord-profile__info">
+                  <h3>Golub</h3>
+                  <p class="discord-profile__username">haisewhy</p>
+                  <p class="discord-profile__bio">Разработка сайтов, ботов и тд в лс</p>
+                </div>
+              </div>
+              <div class="discord-profile__actions">
+                <a href="https://discord.com/users/854478280210776064" target="_blank" rel="noopener" class="btn btn--primary btn--full">Открыть профиль</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+  <!-- TELEGRAM SUPPORT BUTTON -->
+  <a href="https://t.me/slogg12" target="_blank" rel="noopener" class="tg-support" aria-label="Техподдержка в Telegram">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.667l-2.95-.924c-.64-.203-.658-.64.136-.954l11.57-4.461c.537-.194 1.006.131.968.893z" fill="white"/></svg>
+    <span>Поддержка</span>
+  </a>
+
+</body>
+</html>
+
