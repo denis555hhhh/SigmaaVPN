@@ -8,9 +8,8 @@ import sqlite3
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
-import requests
 import uuid
-from base64 import b64encode
+from urllib.parse import urlencode
 
 load_dotenv()
 
@@ -26,10 +25,9 @@ TELEGRAM_TOKEN = "8934651350:AAG4pGwPnY_5nSwV-L141mdhxC-BnEqEJK8"
 ADMIN_ID = 8521842720
 БД_ПУТЬ = os.getenv('DATABASE_PATH', 'sigmavpn.db')
 
-# Yandex.Kassa конфигурация (добавьте свои значения)
-YANDEX_SHOP_ID = os.getenv('YANDEX_SHOP_ID', '123456')  # Замените на ваш Shop ID
-YANDEX_SECRET_KEY = os.getenv('YANDEX_SECRET_KEY', 'test_secret_key')  # Замените на ваш Secret Key
-YANDEX_API_URL = "https://payment.yandex.net/api/v3/payments"
+# Yoomoney конфигурация
+YOOMONEY_WALLET = "4100118775331265"  # Номер кошелька Yoomoney
+YOOMONEY_BASE_URL = "https://yoomoney.ru/quickpay/confirm.xml"
 
 # Подписки и цены
 PLANS = {
@@ -112,111 +110,25 @@ def инициализировать_бд():
     conn.close()
     print("✓ БД инициализирована")
 
-# ==================== YANDEX.KASSA ====================
-def создать_платёж(telegram_id, plan_id, amount):
-    """Создать платёж в Yandex.Kassa"""
-    try:
-        payment_id = str(uuid.uuid4())
-        
-        # Подготовить данные платежа
-        payment_data = {
-            "amount": {
-                "value": str(amount),
-                "currency": "RUB"
-            },
-            "payment_method_data": {
-                "type": "bank_card"
-            },
-            "confirmation": {
-                "type": "redirect",
-                "return_url": "https://sigmavpnn-production.up.railway.app/payment_success"
-            },
-            "description": f"SigmaVPN подписка: {PLANS[plan_id]['name']}",
-            "metadata": {
-                "telegram_id": str(telegram_id),
-                "plan": plan_id,
-                "payment_id": payment_id
-            }
-        }
-        
-        # Создать базовую аутентификацию
-        auth_string = f"{YANDEX_SHOP_ID}:{YANDEX_SECRET_KEY}"
-        auth_bytes = auth_string.encode('utf-8')
-        auth_b64 = b64encode(auth_bytes).decode('utf-8')
-        
-        headers = {
-            "Authorization": f"Basic {auth_b64}",
-            "Content-Type": "application/json",
-            "Idempotence-Key": payment_id
-        }
-        
-        # Отправить запрос
-        response = requests.post(YANDEX_API_URL, json=payment_data, headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            result = response.json()
-            yandex_payment_id = result.get('id')
-            confirmation_url = result.get('confirmation', {}).get('confirmation_url')
-            
-            # Сохранить платёж в БД
-            conn = подключиться()
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO telegram_payments (telegram_id, plan, amount, payment_id, yandex_payment_id, status)
-                VALUES (?, ?, ?, ?, ?, 'pending')
-            """, (telegram_id, plan_id, amount, payment_id, yandex_payment_id))
-            conn.commit()
-            conn.close()
-            
-            return {
-                'success': True,
-                'payment_id': payment_id,
-                'yandex_payment_id': yandex_payment_id,
-                'confirmation_url': confirmation_url
-            }
-        else:
-            logger.error(f"Yandex.Kassa error: {response.status_code} - {response.text}")
-            return {
-                'success': False,
-                'error': 'Ошибка при создании платежа'
-            }
-    except Exception as e:
-        logger.error(f"Payment creation error: {str(e)}")
-        return {
-            'success': False,
-            'error': str(e)
-        }
-
-def активировать_подписку(telegram_id, plan_id):
-    """Активировать подписку после оплаты"""
-    try:
-        plan_info = PLANS[plan_id]
-        start_date = datetime.now()
-        end_date = start_date + timedelta(days=plan_info['duration'])
-        
-        conn = подключиться()
-        cursor = conn.cursor()
-        
-        # Деактивировать старые подписки
-        cursor.execute("""
-            UPDATE telegram_subscriptions 
-            SET status = 'expired'
-            WHERE telegram_id = ? AND status = 'active'
-        """, (telegram_id,))
-        
-        # Создать новую подписку
-        cursor.execute("""
-            INSERT INTO telegram_subscriptions (telegram_id, plan, status, start_date, end_date, devices)
-            VALUES (?, ?, 'active', ?, ?, ?)
-        """, (telegram_id, plan_id, start_date.isoformat(), end_date.isoformat(), plan_info['devices']))
-        
-        conn.commit()
-        conn.close()
-        
-        return True
-    except Exception as e:
-        logger.error(f"Subscription activation error: {str(e)}")
-        return False
+# ==================== YOOMONEY ====================
+def создать_ссылку_оплаты(plan_id):
+    """Создать вечную ссылку на оплату через Yoomoney"""
+    plan_info = PLANS[plan_id]
+    
+    # Параметры ссылки
+    params = {
+        'receiver': YOOMONEY_WALLET,
+        'quickpay-form': 'shop',
+        'targets': f'SigmaVPN {plan_info["name"]}',
+        'sum': plan_info['price'],
+        'currency': 'RUB'
+    }
+    
+    # Построить ссылку
+    from urllib.parse import urlencode
+    payment_url = f"{YOOMONEY_BASE_URL}?{urlencode(params)}"
+    
+    return payment_url
 
 # ==================== КОМАНДЫ ====================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -293,13 +205,24 @@ async def buy_plan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     plan_info = PLANS[plan_id]
     telegram_id = query.from_user.id
     
-    # Создать платёж
-    payment_result = создать_платёж(telegram_id, plan_id, plan_info['price'])
+    # Создать ссылку на оплату
+    payment_url = создать_ссылку_оплаты(plan_id)
     
-    if payment_result['success']:
-        confirmation_url = payment_result['confirmation_url']
-        
-        text = f"""
+    # Сохранить платёж в БД
+    conn = подключиться()
+    cursor = conn.cursor()
+    
+    payment_id = str(uuid.uuid4())
+    cursor.execute("""
+        INSERT INTO telegram_payments (telegram_id, plan, amount, payment_id, status)
+        VALUES (?, ?, ?, ?, 'pending')
+    """, (telegram_id, plan_id, plan_info['price'], payment_id))
+    
+    conn.commit()
+    conn.close()
+    
+    # Сообщение об оплате
+    text = f"""
 ✅ **Вы выбрали подписку:**
 
 {plan_info['name']}
@@ -308,24 +231,12 @@ async def buy_plan(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 🔗 **Нажмите кнопку ниже для оплаты:**
 """
-        
-        keyboard = [
-            [InlineKeyboardButton("💳 Оплатить", url=confirmation_url)],
-            [InlineKeyboardButton("✅ Я оплатил", callback_data=f'confirm_payment_{payment_result["payment_id"]}')],
-            [InlineKeyboardButton("⬅️ Назад", callback_data='show_plans')]
-        ]
-    else:
-        text = f"""
-❌ **Ошибка при создании платежа**
-
-{payment_result.get('error', 'Неизвестная ошибка')}
-
-Попробуйте позже или напишите админу.
-"""
-        
-        keyboard = [
-            [InlineKeyboardButton("⬅️ Назад", callback_data='show_plans')]
-        ]
+    
+    keyboard = [
+        [InlineKeyboardButton("💳 Оплатить через Yoomoney", url=payment_url)],
+        [InlineKeyboardButton("✅ Я оплатил", callback_data=f'confirm_payment_{payment_id}')],
+        [InlineKeyboardButton("⬅️ Назад", callback_data='show_plans')]
+    ]
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
@@ -356,31 +267,47 @@ async def confirm_payment(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = "✅ Платёж уже подтверждён!\n\nВаша подписка активирована."
     else:
         # Активировать подписку
-        if активировать_подписку(telegram_id, payment['plan']):
-            # Обновить статус платежа
-            conn = подключиться()
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE telegram_payments SET status = 'completed'
-                WHERE payment_id = ?
-            """, (payment_id,))
-            conn.commit()
-            conn.close()
-            
-            plan_info = PLANS[payment['plan']]
-            text = f"""
+        plan_info = PLANS[payment['plan']]
+        start_date = datetime.now()
+        end_date = start_date + timedelta(days=plan_info['duration'])
+        
+        conn = подключиться()
+        cursor = conn.cursor()
+        
+        # Деактивировать старые подписки
+        cursor.execute("""
+            UPDATE telegram_subscriptions 
+            SET status = 'expired'
+            WHERE telegram_id = ? AND status = 'active'
+        """, (telegram_id,))
+        
+        # Создать новую подписку
+        cursor.execute("""
+            INSERT INTO telegram_subscriptions (telegram_id, plan, status, start_date, end_date, devices)
+            VALUES (?, ?, 'active', ?, ?, ?)
+        """, (telegram_id, payment['plan'], start_date.isoformat(), end_date.isoformat(), plan_info['devices']))
+        
+        # Обновить статус платежа
+        cursor.execute("""
+            UPDATE telegram_payments SET status = 'completed'
+            WHERE payment_id = ?
+        """, (payment_id,))
+        
+        conn.commit()
+        conn.close()
+        
+        text = f"""
 ✅ **Спасибо за покупку!**
 
 Подписка активирована: {plan_info['name']}
 📅 Период: {plan_info['description']}
+📱 Устройств: {plan_info['devices']}
 
 🔗 **Ваш VPN конфиг:**
 Скоро будет отправлен в отдельном сообщении.
 
 Если конфиг не пришёл, напишите админу: @sigmavpn_admin
 """
-        else:
-            text = "❌ Ошибка при активации подписки"
     
     keyboard = [
         [InlineKeyboardButton("📊 Мои подписки", callback_data='my_subscriptions')],
@@ -509,7 +436,8 @@ def main():
     """Запуск бота"""
     print("🤖 Запуск Telegram бота SigmaVPN...")
     print(f"📱 Telegram ID админа: {ADMIN_ID}")
-    print(f"💳 Yandex.Kassa Shop ID: {YANDEX_SHOP_ID}")
+    print(f"💳 Yoomoney кошелёк: {YOOMONEY_WALLET}")
+    print("=" * 50)
     
     # Инициализировать БД
     инициализировать_бд()
