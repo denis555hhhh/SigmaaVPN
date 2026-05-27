@@ -2598,3 +2598,51 @@ section {
     font-size: 13px;
   }
 }
+
+
+/* ===== HERO SIDE INFO ===== */
+.hero__side-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.side-info-card {
+  padding: 16px;
+  background: rgba(22, 163, 74, 0.05);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.side-info-card:hover {
+  background: rgba(22, 163, 74, 0.1);
+  border-color: rgba(22, 163, 74, 0.4);
+  transform: translateX(4px);
+}
+
+.side-info-card__icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.side-info-card h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4ade80;
+  margin-bottom: 4px;
+}
+
+.side-info-card p {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+@media (max-width: 1024px) {
+  .hero__side-info {
+    display: none;
+  }
+}
