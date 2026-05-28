@@ -1,2 +1,2 @@
-web: python admin_server.py
+web: python app.py
 worker: python telegram_bot.py
