@@ -201,28 +201,29 @@ async def buy_plan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     
-    plan_id = query.data.split('_')[1]
-    plan_info = PLANS[plan_id]
-    telegram_id = query.from_user.id
-    
-    # Создать ссылку на оплату
-    payment_url = создать_ссылку_оплаты(plan_id)
-    
-    # Сохранить платёж в БД
-    conn = подключиться()
-    cursor = conn.cursor()
-    
-    payment_id = str(uuid.uuid4())
-    cursor.execute("""
-        INSERT INTO telegram_payments (telegram_id, plan, amount, payment_id, status)
-        VALUES (?, ?, ?, ?, 'pending')
-    """, (telegram_id, plan_id, plan_info['price'], payment_id))
-    
-    conn.commit()
-    conn.close()
-    
-    # Сообщение об оплате
-    text = f"""
+    try:
+        plan_id = query.data.split('_')[1]
+        plan_info = PLANS[plan_id]
+        telegram_id = query.from_user.id
+        
+        # Создать ссылку на оплату
+        payment_url = создать_ссылку_оплаты(plan_id)
+        
+        # Сохранить платёж в БД
+        conn = подключиться()
+        cursor = conn.cursor()
+        
+        payment_id = str(uuid.uuid4())
+        cursor.execute("""
+            INSERT INTO telegram_payments (telegram_id, plan, amount, payment_id, status)
+            VALUES (?, ?, ?, ?, 'pending')
+        """, (telegram_id, plan_id, plan_info['price'], payment_id))
+        
+        conn.commit()
+        conn.close()
+        
+        # Сообщение об оплате
+        text = f"""
 ✅ **Вы выбрали подписку:**
 
 {plan_info['name']}
@@ -231,72 +232,76 @@ async def buy_plan(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 🔗 **Нажмите кнопку ниже для оплаты:**
 """
-    
-    keyboard = [
-        [InlineKeyboardButton("💳 Оплатить через Yoomoney", url=payment_url)],
-        [InlineKeyboardButton("✅ Я оплатил", callback_data=f'confirm_payment_{payment_id}')],
-        [InlineKeyboardButton("⬅️ Назад", callback_data='show_plans')]
-    ]
-    
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+        
+        keyboard = [
+            [InlineKeyboardButton("💳 Оплатить через Yoomoney", url=payment_url)],
+            [InlineKeyboardButton("✅ Я оплатил", callback_data=f'confirm_payment_{payment_id}')],
+            [InlineKeyboardButton("⬅️ Назад", callback_data='show_plans')]
+        ]
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Ошибка в buy_plan: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 async def confirm_payment(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Подтвердить платёж"""
     query = update.callback_query
     await query.answer()
     
-    payment_id = query.data.split('_')[2]
-    telegram_id = query.from_user.id
-    
-    # Проверить платёж в БД
-    conn = подключиться()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT plan, status FROM telegram_payments
-        WHERE payment_id = ? AND telegram_id = ?
-    """, (payment_id, telegram_id))
-    
-    payment = cursor.fetchone()
-    conn.close()
-    
-    if not payment:
-        text = "❌ Платёж не найден"
-    elif payment['status'] == 'completed':
-        text = "✅ Платёж уже подтверждён!\n\nВаша подписка активирована."
-    else:
-        # Активировать подписку
-        plan_info = PLANS[payment['plan']]
-        start_date = datetime.now()
-        end_date = start_date + timedelta(days=plan_info['duration'])
+    try:
+        payment_id = query.data.split('_')[2]
+        telegram_id = query.from_user.id
         
+        # Проверить платёж в БД
         conn = подключиться()
         cursor = conn.cursor()
         
-        # Деактивировать старые подписки
         cursor.execute("""
-            UPDATE telegram_subscriptions 
-            SET status = 'expired'
-            WHERE telegram_id = ? AND status = 'active'
-        """, (telegram_id,))
+            SELECT plan, status FROM telegram_payments
+            WHERE payment_id = ? AND telegram_id = ?
+        """, (payment_id, telegram_id))
         
-        # Создать новую подписку
-        cursor.execute("""
-            INSERT INTO telegram_subscriptions (telegram_id, plan, status, start_date, end_date, devices)
-            VALUES (?, ?, 'active', ?, ?, ?)
-        """, (telegram_id, payment['plan'], start_date.isoformat(), end_date.isoformat(), plan_info['devices']))
-        
-        # Обновить статус платежа
-        cursor.execute("""
-            UPDATE telegram_payments SET status = 'completed'
-            WHERE payment_id = ?
-        """, (payment_id,))
-        
-        conn.commit()
+        payment = cursor.fetchone()
         conn.close()
         
-        text = f"""
+        if not payment:
+            text = "❌ Платёж не найден"
+        elif payment['status'] == 'completed':
+            text = "✅ Платёж уже подтверждён!\n\nВаша подписка активирована."
+        else:
+            # Активировать подписку
+            plan_info = PLANS[payment['plan']]
+            start_date = datetime.now()
+            end_date = start_date + timedelta(days=plan_info['duration'])
+            
+            conn = подключиться()
+            cursor = conn.cursor()
+            
+            # Деактивировать старые подписки
+            cursor.execute("""
+                UPDATE telegram_subscriptions 
+                SET status = 'expired'
+                WHERE telegram_id = ? AND status = 'active'
+            """, (telegram_id,))
+            
+            # Создать новую подписку
+            cursor.execute("""
+                INSERT INTO telegram_subscriptions (telegram_id, plan, status, start_date, end_date, devices)
+                VALUES (?, ?, 'active', ?, ?, ?)
+            """, (telegram_id, payment['plan'], start_date.isoformat(), end_date.isoformat(), plan_info['devices']))
+            
+            # Обновить статус платежа
+            cursor.execute("""
+                UPDATE telegram_payments SET status = 'completed'
+                WHERE payment_id = ?
+            """, (payment_id,))
+            
+            conn.commit()
+            conn.close()
+            
+            text = f"""
 ✅ **Спасибо за покупку!**
 
 Подписка активирована: {plan_info['name']}
@@ -308,69 +313,77 @@ async def confirm_payment(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 Если конфиг не пришёл, напишите админу: @sigmavpn_admin
 """
-    
-    keyboard = [
-        [InlineKeyboardButton("📊 Мои подписки", callback_data='my_subscriptions')],
-        [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+        
+        keyboard = [
+            [InlineKeyboardButton("📊 Мои подписки", callback_data='my_subscriptions')],
+            [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Ошибка в confirm_payment: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 async def my_subscriptions(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Показать мои подписки"""
     query = update.callback_query
     await query.answer()
     
-    telegram_id = query.from_user.id
-    
-    conn = подключиться()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT plan, status, start_date, end_date, devices FROM telegram_subscriptions
-        WHERE telegram_id = ? AND status = 'active'
-        ORDER BY end_date DESC
-    """, (telegram_id,))
-    
-    subscriptions = cursor.fetchall()
-    conn.close()
-    
-    if not subscriptions:
-        text = "❌ У вас нет активных подписок\n\nКупите подписку, чтобы начать пользоваться VPN!"
-    else:
-        text = "📊 **Ваши активные подписки:**\n\n"
-        for sub in subscriptions:
-            plan_info = PLANS.get(sub['plan'], {})
-            end_date = datetime.fromisoformat(sub['end_date'])
-            days_left = (end_date - datetime.now()).days
-            
-            text += f"{plan_info.get('name', 'Неизвестная подписка')}\n"
-            text += f"✅ Статус: {sub['status']}\n"
-            text += f"📱 Устройств: {sub['devices']}\n"
-            text += f"⏰ Осталось: {days_left} дней\n"
-            text += f"📅 До: {end_date.strftime('%d.%m.%Y')}\n\n"
-    
-    keyboard = [
-        [InlineKeyboardButton("📦 Купить ещё", callback_data='show_plans')],
-        [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    try:
+        telegram_id = query.from_user.id
+        
+        conn = подключиться()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT plan, status, start_date, end_date, devices FROM telegram_subscriptions
+            WHERE telegram_id = ? AND status = 'active'
+            ORDER BY end_date DESC
+        """, (telegram_id,))
+        
+        subscriptions = cursor.fetchall()
+        conn.close()
+        
+        if not subscriptions:
+            text = "❌ У вас нет активных подписок\n\nКупите подписку, чтобы начать пользоваться VPN!"
+        else:
+            text = "📊 **Ваши активные подписки:**\n\n"
+            for sub in subscriptions:
+                plan_info = PLANS.get(sub['plan'], {})
+                end_date = datetime.fromisoformat(sub['end_date'])
+                days_left = (end_date - datetime.now()).days
+                
+                text += f"{plan_info.get('name', 'Неизвестная подписка')}\n"
+                text += f"✅ Статус: {sub['status']}\n"
+                text += f"📱 Устройств: {sub['devices']}\n"
+                text += f"⏰ Осталось: {days_left} дней\n"
+                text += f"📅 До: {end_date.strftime('%d.%m.%Y')}\n\n"
+        
+        keyboard = [
+            [InlineKeyboardButton("📦 Купить ещё", callback_data='show_plans')],
+            [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Ошибка в my_subscriptions: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Помощь"""
     query = update.callback_query
     await query.answer()
     
-    text = """
+    try:
+        text = """
 ❓ **Помощь**
 
 **Как пользоваться SigmaVPN?**
 
 1. 📦 Выберите подписку
-2. 💳 Оплатите через Yandex.Kassa
+2. 💳 Оплатите через Yoomoney
 3. 📥 Получите VPN конфиг
 4. 🔗 Подключитесь к VPN
 
@@ -386,50 +399,62 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 💬 Telegram: @sigmavpn_admin
 🌐 Сайт: https://sigmavpnn-production.up.railway.app
 """
-    
-    keyboard = [
-        [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+        
+        keyboard = [
+            [InlineKeyboardButton("⬅️ Назад", callback_data='back_to_menu')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Ошибка в help_command: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 async def back_to_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Вернуться в главное меню"""
     query = update.callback_query
     await query.answer()
     
-    text = """
+    try:
+        text = """
 🏠 **Главное меню**
 
 Выберите действие:
 """
-    
-    keyboard = [
-        [InlineKeyboardButton("📦 Выбрать подписку", callback_data='show_plans')],
-        [InlineKeyboardButton("📊 Мои подписки", callback_data='my_subscriptions')],
-        [InlineKeyboardButton("❓ Помощь", callback_data='help')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+        
+        keyboard = [
+            [InlineKeyboardButton("📦 Выбрать подписку", callback_data='show_plans')],
+            [InlineKeyboardButton("📊 Мои подписки", callback_data='my_subscriptions')],
+            [InlineKeyboardButton("❓ Помощь", callback_data='help')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Ошибка в back_to_menu: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик кнопок"""
     query = update.callback_query
+    await query.answer()
     
-    if query.data == 'show_plans':
-        await show_plans(update, context)
-    elif query.data.startswith('buy_'):
-        await buy_plan(update, context)
-    elif query.data.startswith('confirm_payment_'):
-        await confirm_payment(update, context)
-    elif query.data == 'my_subscriptions':
-        await my_subscriptions(update, context)
-    elif query.data == 'help':
-        await help_command(update, context)
-    elif query.data == 'back_to_menu':
-        await back_to_menu(update, context)
+    try:
+        if query.data == 'show_plans':
+            await show_plans(update, context)
+        elif query.data.startswith('buy_'):
+            await buy_plan(update, context)
+        elif query.data.startswith('confirm_payment_'):
+            await confirm_payment(update, context)
+        elif query.data == 'my_subscriptions':
+            await my_subscriptions(update, context)
+        elif query.data == 'help':
+            await help_command(update, context)
+        elif query.data == 'back_to_menu':
+            await back_to_menu(update, context)
+    except Exception as e:
+        logger.error(f"Ошибка в обработчике кнопок: {e}")
+        await query.edit_message_text(f"❌ Ошибка: {str(e)}")
 
 # ==================== ЗАПУСК ====================
 def main():
