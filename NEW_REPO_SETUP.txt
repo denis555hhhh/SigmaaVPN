@@ -1,0 +1,50 @@
+🔄 ПОДКЛЮЧЕНИЕ К НОВОМУ РЕПОЗИТОРИЮ
+====================================
+
+НОВЫЙ РЕПОЗИТОРИЙ: https://github.com/denis555hhhh/SigmaaVPN.git
+
+СПОСОБ 1: Автоматический (рекомендуется)
+==========================================
+1. Двойной клик на SETUP_NEW_REPO.bat
+2. Батник автоматически:
+   - Удалит старый remote
+   - Добавит новый remote
+   - Добавит все файлы
+   - Создаст коммит
+   - Запушит на GitHub
+
+СПОСОБ 2: Ручной (cmd.exe)
+===========================
+1. Открой cmd.exe
+2. Перейди в папку: cd "C:\Users\Gnida222\Desktop\Сайт впн"
+3. Выполни команды:
+
+   git remote remove origin
+   git remote add origin https://github.com/denis555hhhh/SigmaaVPN.git
+   git add -A
+   git commit -m "Initial commit - SigmaVPN website"
+   git push -u origin main
+
+   (Если ошибка с main, попробуй: git push -u origin master)
+
+СПОСОБ 3: GitHub Desktop
+=========================
+1. Открой GitHub Desktop
+2. File → Clone repository
+3. Введи: https://github.com/denis555hhhh/SigmaaVPN.git
+4. Выбери папку: C:\Users\Gnida222\Desktop\Сайт впн
+5. Нажми Clone
+6. Затем Publish repository
+
+ПОСЛЕ ПОДКЛЮЧЕНИЯ:
+===================
+1. Проверь репозиторий: https://github.com/denis555hhhh/SigmaaVPN
+2. Все файлы должны быть там
+3. Подключи Railway к новому репозиторию:
+   - Зайди на https://railway.app
+   - Откройи проект sigmaVPNN
+   - Settings → Source
+   - Выбери новый репозиторий SigmaaVPN
+   - Railway автоматически перестроится
+
+ГОТОВО! 🎉
